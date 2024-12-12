@@ -14,14 +14,16 @@ const themeToggle = document.getElementById("toggle-theme");
 
 const users = JSON.parse(localStorage.getItem("users")) || [];
 
-// Session timeout duration in milliseconds
+// Duración de la sesión en milisegundos
 const SESSION_TIMEOUT = 10 * 60 * 1000;
 
+// Función para iniciar el temporizador de la sesión
 function startSessionTimer() {
   const expirationTime = Date.now() + SESSION_TIMEOUT;
   localStorage.setItem("session-expiration", expirationTime);
 }
 
+// Función para comprobar si la sesión ha expirado
 function checkSession() {
   const expirationTime = parseInt(localStorage.getItem("session-expiration"), 10);
   if (Date.now() > expirationTime) {
@@ -30,9 +32,10 @@ function checkSession() {
   }
 }
 
-// Check session expiration periodically
+// Comprobar expiración de la sesión periódicamente
 setInterval(checkSession, 1000);
 
+// Navegación entre pantallas
 goToRegister.addEventListener("click", () => {
   loginScreen.classList.add("hidden");
   registerScreen.classList.remove("hidden");
@@ -43,12 +46,14 @@ backToLogin.addEventListener("click", () => {
   loginScreen.classList.remove("hidden");
 });
 
+// Cerrar sesión y eliminar datos de sesión
 logout.addEventListener("click", () => {
   errorScreen.classList.add("hidden");
   loginScreen.classList.remove("hidden");
   localStorage.removeItem("session-expiration");
 });
 
+// Registro de usuarios
 registerForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const username = document.getElementById("reg-username").value;
@@ -74,6 +79,7 @@ registerForm.addEventListener("submit", (e) => {
   loginScreen.classList.remove("hidden");
 });
 
+// Inicio de sesión
 loginForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const username = document.getElementById("username").value;
@@ -87,11 +93,12 @@ loginForm.addEventListener("submit", (e) => {
   }
 
   loginError.textContent = "";
-  loginScreen.classList.add("hidden");
-  errorScreen.classList.remove("hidden");
   startSessionTimer();
+  localStorage.setItem("loggedInUser", username);
+  window.location.href = "../pages/dados.html"; 
 });
 
+// Cambiar tema
 themeToggle.addEventListener("click", () => {
   document.body.classList.toggle("dark-mode");
   localStorage.setItem(
@@ -100,6 +107,7 @@ themeToggle.addEventListener("click", () => {
   );
 });
 
+// Configuración inicial
 document.addEventListener("DOMContentLoaded", () => {
   const savedTheme = localStorage.getItem("theme");
   if (savedTheme === "dark") {
